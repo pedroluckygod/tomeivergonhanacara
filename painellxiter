@@ -7,6 +7,9 @@ local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local Camera = workspace.CurrentCamera
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+
+
 
 local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/linemaster2/esp-library/main/library.lua"))();
 ESP.Enabled = true;
@@ -21,6 +24,8 @@ _G.EHBON = false
 _G.Aiming = false
 _G.aimspot = "Head"
 
+local TweenOn = false
+local TweenTime = 0.2
 local valorhitbox = 30
 local fovAmount = 100
 local teamCheck = false
@@ -28,6 +33,8 @@ local fovVisivel = true
 
 local WalkSpeedToggle = false
 local JumpPowerToggle = false
+
+
 
 local fovCircle = Drawing.new("Circle")
 fovCircle.Radius = fovAmount
@@ -135,7 +142,14 @@ end
 
 local function shitlook()
     plr = Closestplr()
-    Camera.CFrame = CFrame.new(Camera.CFrame.Position, plr.Character[_G.aimspot].Position)
+    
+    if TweenOn == true then
+        local aimthing = CFrame.new(Camera.CFrame.Position, plr.Character[_G.aimspot].Position)
+        local aimtween = TweenService:Create(Camera, TweenInfo.new(TweenTime), {CFrame = aimthing })
+        aimtween:Play()
+    else
+        Camera.CFrame = CFrame.new(Camera.CFrame.Position, plr.Character[_G.aimspot].Position)
+    end
 end
 
 game:GetService("RunService").RenderStepped:Connect(function()
@@ -218,6 +232,40 @@ LeftGroupBox:AddToggle("MyToggle", {
 	Callback = function(Value)
 		fovCircle.Visible = Value
 	end,
+})
+
+local ativarab = LeftGroupBox:AddToggle("MyToggle", {
+	Text = "Aim Tween",
+	Tooltip = "Te faz parecer limpo", -- Information shown when you hover over the toggle
+	DisabledTooltip = "Desativado", -- Information shown when you hover over the toggle while it's disabled
+
+	Default = TweenOn, -- Default value (true / false)
+	Disabled = false, -- Will disable the toggle (true / false)
+	Visible = true, -- Will make the toggle invisible (true / false)
+	Risky = false, -- Makes the text red (the color can be changed using Library.Scheme.Red) (Default value = false)
+
+	Callback = function(Value)
+        TweenOn = Value
+	end,
+})
+
+LeftGroupBox:AddSlider("MySlider", {
+	Text = "Tempo do Tween",
+	Default = TweenTime,
+	Min = 0,
+	Max = 1,
+	Rounding = 1,
+	Compact = false,
+
+	Callback = function(Value)
+       TweenTime = Value
+	end,
+
+	Tooltip = "", -- Information shown when you hover over the slider
+	DisabledTooltip = "I am disabled!", -- Information shown when you hover over the slider while it's disabled
+
+	Disabled = false, -- Will disable the slider (true / false)
+	Visible = true, -- Will make the slider invisible (true / false)
 })
 
 LeftGroupBox:AddSlider("MySlider", {

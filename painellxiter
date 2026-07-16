@@ -20,10 +20,15 @@ ESP.ShowSkeletons = false;
 _G.EHBON = false
 _G.Aiming = false
 _G.aimspot = "Head"
+
 local valorhitbox = 30
 local fovAmount = 100
 local teamCheck = false
 local fovVisivel = true
+
+local WalkSpeedToggle = false
+local JumpPowerToggle = false
+
 local fovCircle = Drawing.new("Circle")
 fovCircle.Radius = fovAmount
 fovCircle.Visible = fovVisivel
@@ -36,7 +41,7 @@ fovCircle.Filled = false
 
 
 
-
+--Funcoes
 
 -- Expansor de hitbox
 
@@ -86,7 +91,6 @@ game["Run Service"].RenderStepped:Connect(function()
     end
 end)
 
--- funcoes
 
 function NotObstructing(Destination, Ignore)
     local Origin = workspace.CurrentCamera.CFrame.Position
@@ -144,6 +148,8 @@ if closest ~= nil and closest.Character.Humanoid.Health > 0 then
     end
 end)
 
+-- Lib
+
 
 local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
@@ -162,7 +168,7 @@ Library.ShowToggleFrameInKeybinds = true
 
 local Window = Library:CreateWindow({
 	Title = "Lucky Xiter",
-	Footer = "Versão 1.0",
+	Footer = "Versão 1.1",
 	Icon = 112774205316776,
 	NotifySide = "Right",
 	ShowCustomCursor = true,
@@ -172,12 +178,18 @@ local Tabs = {
 Main = Window:AddTab("Mira", "crosshair"),
 ESPTab = Window:AddTab("ESP", "user"),
 HBXTab = Window:AddTab("Hitbox", "sword"),
+LPTab = Window:AddTab("Local Player", "person-standing"),
+OTRTab = Window:AddTab("Outro", "blocks"),
 
 }
 
-local LeftGroupBox = Tabs.Main:AddLeftGroupbox("Groupbox", "boxes")
-local lb2 = Tabs.ESPTab:AddLeftGroupbox("Left Groupbox", "wrench")
-local lb3 = Tabs.HBXTab:AddLeftGroupbox("Left Groupbox", "sword")
+local LeftGroupBox = Tabs.Main:AddLeftGroupbox("Mira", "crosshair")
+local lb2 = Tabs.ESPTab:AddLeftGroupbox("ESP", "line-squiggle")
+local lb3 = Tabs.HBXTab:AddLeftGroupbox("Groupbox", "sword")
+local lpgb = Tabs.LPTab:AddLeftGroupbox("Velocidade", "User")
+local lprgb = Tabs.LPTab:AddRightGroupbox("Pulo")
+local gboxSn = Tabs.OTRTab:AddLeftGroupbox("Left Groupbox", "sword")
+
 local ativarab = LeftGroupBox:AddToggle("MyToggle", {
 	Text = "Ativar Aimbot",
 	Tooltip = "Ativar o Aimbot", -- Information shown when you hover over the toggle
@@ -469,7 +481,7 @@ lb3:AddToggle("MySlider", {
 })
 
 lb3:AddSlider("MySlider", {
-	Text = "Tamanho Fov",
+	Text = "Tamanho Hitbox",
 	Default = valorhitbox,
 	Min = 0,
 	Max = 30,
@@ -487,4 +499,220 @@ lb3:AddSlider("MySlider", {
 
 	Disabled = false, -- Will disable the slider (true / false)
 	Visible = true, -- Will make the slider invisible (true / false)
+})
+
+local MyButton = lb3:AddButton({
+	Text = "Anti Kick",
+	Func = function()
+	    pcall(function()
+	    local old; old = hookmetamethod(game, "__namecall", function(self,...)
+   local namecallmethod = getnamecallmethod():lower()
+    
+    if namecallmethod == "kick" then 
+       return print("ac tried to fuck ur ahh")
+    end
+    return old(self, ...)
+	    end)
+    Library:Notify({
+		Title = "Injetado",
+		Description = "Bypass Injetado com sucesso, nao sera expulso do jogo (nem sempre) " .. ReceivedKey .. "\nSuccess: " .. tostring(Success),
+		Time = 4,
+	})
+end)
+
+    end,
+	DoubleClick = false,
+
+	Tooltip = "mata kicks (localscripts apenas)",
+	DisabledTooltip = "I am disabled!",
+
+	Disabled = false, -- Will disable the button (true / false)
+	Visible = true, -- Will make the button invisible (true / false)
+	Risky = false, -- Makes the text red (the color can be changed using Library.Scheme.Red) (Default value = false)
+})
+
+local MyButton = lb3:AddButton({
+	Text = "HitboxAntiKick",
+	Func = function()
+	    
+pcall(function()
+    local mt = getrawmetatable(game)
+    setreadonly(mt, false)
+    local old = mt.__index
+    mt.__index = function(self,key)
+    if tostring(self) == "HumanoidRootPart" and tostring(key) == "Size" then
+                  return Vector3.new(2,2,1)
+         end
+        return old(self,key)
+    end 
+    setreadonly(mt, true)
+end)
+
+	    Library:Notify({
+		Title = "Injetado",
+		Description = "Bypass Injetado com sucesso, Não sera expulso do jogo (nem sempre) " .. ReceivedKey .. "\nSuccess: " .. tostring(Success),
+		Time = 4,
+	})
+
+    end,
+	DoubleClick = false,
+
+	Tooltip = "Faz sua hitbox aparecer normal pro servidor,assim, não te expulsando",
+	DisabledTooltip = "I am disabled!",
+
+	Disabled = false, -- Will disable the button (true / false)
+	Visible = true, -- Will make the button invisible (true / false)
+	Risky = false, -- Makes the text red (the color can be changed using Library.Scheme.Red) (Default value = false)
+})
+
+
+lpgb:AddToggle("SpeedToggle", {
+	Text = "Alterar Velocidade",
+	Default = WalkSpeedToggle,
+	Min = 16,
+	Max = 130, -- why would you need more than that
+	Rounding = 1,
+	Compact = false,
+
+	Callback = function(Value)
+		WalkSpeedToggle = Value
+	end,
+
+	Tooltip = "", -- Information shown when you hover over the slider
+	DisabledTooltip = "I am disabled!", -- Information shown when you hover over the slider while it's disabled
+
+	Disabled = false, -- Will disable the slider (true / false)
+	Visible = true, -- Will make the slider invisible (true / false)
+})
+
+lpgb:AddSlider("MySlider", {
+	Text = "Velocidade",
+	Default = 16,
+	Min = 16,
+	Max = 300,
+	Rounding = 1,
+	Compact = false,
+
+	Callback = function(Value)
+         while WalkSpeedToggle == true do
+            LocalPlayer.Character.Humanoid.WalkSpeed = Value
+            task.wait()
+         end
+    end,
+
+	Tooltip = "", -- Information shown when you hover over the slider
+	DisabledTooltip = "I am disabled!", -- Information shown when you hover over the slider while it's disabled
+
+	Disabled = false, -- Will disable the slider (true / false)
+	Visible = true, -- Will make the slider invisible (true / false)
+})
+
+
+lprgb:AddToggle("JPSlider", {
+	Text = "Alterar Poder de Pulo",
+	Default = WalkSpeedToggle,
+	Min = 50,
+	Max = 130, -- why would you need more than that
+	Rounding = 1,
+	Compact = false,
+
+	Callback = function(Value)
+		JumpPowerToggle = Value
+	end,
+
+	Tooltip = "", -- Information shown when you hover over the slider
+	DisabledTooltip = "I am disabled!", -- Information shown when you hover over the slider while it's disabled
+
+	Disabled = false, -- Will disable the slider (true / false)
+	Visible = true, -- Will make the slider invisible (true / false)
+})
+
+lprgb:AddSlider("MySlider", {
+	Text = "Pulo",
+	Default = 50,
+	Min = 50,
+	Max = 300,
+	Rounding = 1,
+	Compact = false,
+
+	Callback = function(Value)
+         while JumpPowerToggle == true do
+            LocalPlayer.Character.Humanoid.JumpPower = Value
+            task.wait()
+         end
+    end,
+
+	Tooltip = "", -- Information shown when you hover over the slider
+	DisabledTooltip = "I am disabled!", -- Information shown when you hover over the slider while it's disabled
+
+	Disabled = false, -- Will disable the slider (true / false)
+	Visible = true, -- Will make the slider invisible (true / false)
+})
+
+local MyButtonlp = lpgb:AddButton({
+	Text = "Bypass Velocidade",
+	Func = function()
+	    
+pcall(function()
+    local mt = getrawmetatable(game)
+    setreadonly(mt, false)
+    local old = mt.__index
+    mt.__index = function(self,key)
+    if tostring(self) == "Humanoid" and tostring(key) == "WalkSpeed" then
+                  return 16
+         end
+        return old(self,key)
+    end 
+    setreadonly(mt, true)
+end)
+
+	    Library:Notify({
+		Title = "Injetado",
+		Description = "Bypass Injetado com sucesso, Não sera expulso do jogo (nem sempre) " .. ReceivedKey .. "\nSuccess: " .. tostring(Success),
+		Time = 4,
+	})
+
+    end,
+	DoubleClick = false,
+
+	Tooltip = "Faz sua hitbox aparecer normal pro servidor,assim, não te expulsando",
+	DisabledTooltip = "I am disabled!",
+
+	Disabled = false, -- Will disable the button (true / false)
+	Visible = true, -- Will make the button invisible (true / false)
+	Risky = false, -- Makes the text red (the color can be changed using Library.Scheme.Red) (Default value = false)
+})
+
+local MyButtonlpr = lprgb:AddButton({
+	Text = "Jump Bypass",
+	Func = function()
+	    
+pcall(function()
+    local mt = getrawmetatable(game)
+    setreadonly(mt, false)
+    local old = mt.__index
+    mt.__index = function(self,key)
+    if tostring(self) == "Humanoid" and tostring(key) == "JumpPower" then
+                  return 50
+         end
+        return old(self,key)
+    end 
+    setreadonly(mt, true)
+end)
+
+	    Library:Notify({
+		Title = "Injetado",
+		Description = "Bypass Injetado com sucesso, Não sera expulso do jogo (nem sempre) " .. ReceivedKey .. "\nSuccess: " .. tostring(Success),
+		Time = 4,
+	})
+
+    end,
+	DoubleClick = false,
+
+	Tooltip = "Faz sua hitbox aparecer normal pro servidor,assim, não te expulsando",
+	DisabledTooltip = "I am disabled!",
+
+	Disabled = false, -- Will disable the button (true / false)
+	Visible = true, -- Will make the button invisible (true / false)
+	Risky = false, -- Makes the text red (the color can be changed using Library.Scheme.Red) (Default value = false)
 })

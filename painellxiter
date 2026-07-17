@@ -234,6 +234,21 @@ LeftGroupBox:AddToggle("MyToggle", {
 	end,
 })
 
+LeftGroupBox:AddToggle("MyToggle", {
+	Text = "Aim Time",
+	Tooltip = "Mirar no seu time", -- Information shown when you hover over the toggle
+	DisabledTooltip = "Desativado", -- Information shown when you hover over the toggle while it's disabled
+
+	Default = teamCheck, -- Default value (true / false)
+	Disabled = false, -- Will disable the toggle (true / false)
+	Visible = true, -- Will make the toggle invisible (true / false)
+	Risky = false, -- Makes the text red (the color can be changed using Library.Scheme.Red) (Default value = false)
+
+	Callback = function(Value)
+        teamCheck = Value
+	end,
+})
+
 local ativarab = LeftGroupBox:AddToggle("MyToggle", {
 	Text = "Aim Tween",
 	Tooltip = "Te faz parecer limpo", -- Information shown when you hover over the toggle

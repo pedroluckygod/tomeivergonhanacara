@@ -1,15 +1,39 @@
-
 -- Painel LuckyXiter
---Creditos Para: dono do esp, aim( o aim foi uma mistura de 2 diferentes ), 
+--Creditos Para: dono do esp, aim( o aim foi uma mistura de 2 diferentes )
+
+
+
+
+
+
+game.StarterGui:SetCore("SendNotification", {
+Title = "Lucky Xiter",
+Text = "Welcome / Bem Vindo(a), " ..game.Players.LocalPlayer.Name.. " / ".. game.Players.LocalPlayer.DisplayName.. ".",
+Duration = 2,
+})
+
+game.StarterGui:SetCore("SendNotification", {
+Title = "Lucky Xiter",
+Text = "Credits to The ESP Lib Creator (linemaster2) And the Aimbot Creator",
+Duration = 2,
+})
+game.StarterGui:SetCore("SendNotification", {
+Title = "Lucky Xiter",
+Text = "Creditos Para o Criador do ESP (linemaster2) e do Aimbot",
+Duration = 2,
+})
+
+
+
+
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local Mouse = LocalPlayer:GetMouse()
 local Camera = workspace.CurrentCamera
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
-
+    
 
 local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/linemaster2/esp-library/main/library.lua"))();
 ESP.Enabled = true;
@@ -19,6 +43,7 @@ ESP.ShowHealth = false;
 ESP.ShowTracer = false;
 ESP.ShowDistance = false;
 ESP.ShowSkeletons = false;
+
 
 _G.EHBON = false
 _G.Aiming = false
@@ -35,7 +60,6 @@ local WalkSpeedToggle = false
 local JumpPowerToggle = false
 
 
-
 local fovCircle = Drawing.new("Circle")
 fovCircle.Radius = fovAmount
 fovCircle.Visible = fovVisivel
@@ -44,7 +68,6 @@ fovCircle.Thickness = 3
 fovCircle.NumSides = 11
 fovCircle.Position = Vector2.new(Camera.ViewportSize.X /2, Camera.ViewportSize.Y /2 )
 fovCircle.Filled = false
-
 
 
 
@@ -106,7 +129,7 @@ function NotObstructing(Destination, Ignore)
     return Hit == nil
 end
 
-local function stupidfovupdate()
+local function fovupdate()
 fovCircle.Position = Vector2.new(Camera.ViewportSize.X /2, Camera.ViewportSize.Y /2 )
 end
 
@@ -140,7 +163,7 @@ local function Closestplr()
     return closestPlayer
 end
 
-local function shitlook()
+local function look()
     plr = Closestplr()
     
     if TweenOn == true then
@@ -154,10 +177,10 @@ end
 
 game:GetService("RunService").RenderStepped:Connect(function()
 local closest = Closestplr()
-stupidfovupdate()
+fovupdate()
 if _G.Aiming == true then
 if closest ~= nil and closest.Character.Humanoid.Health > 0 then
-          shitlook()
+          look()
        end
     end
 end)
@@ -194,8 +217,9 @@ ESPTab = Window:AddTab("ESP", "user"),
 HBXTab = Window:AddTab("Hitbox", "sword"),
 LPTab = Window:AddTab("Local Player", "person-standing"),
 OTRTab = Window:AddTab("Outro", "blocks"),
-
 }
+
+
 
 local LeftGroupBox = Tabs.Main:AddLeftGroupbox("Mira", "crosshair")
 local lb2 = Tabs.ESPTab:AddLeftGroupbox("ESP", "line-squiggle")
@@ -203,6 +227,8 @@ local lb3 = Tabs.HBXTab:AddLeftGroupbox("Groupbox", "sword")
 local lpgb = Tabs.LPTab:AddLeftGroupbox("Velocidade", "User")
 local lprgb = Tabs.LPTab:AddRightGroupbox("Pulo")
 local gboxSn = Tabs.OTRTab:AddLeftGroupbox("Left Groupbox", "sword")
+
+
 
 local ativarab = LeftGroupBox:AddToggle("MyToggle", {
 	Text = "Ativar Aimbot",
@@ -219,20 +245,6 @@ local ativarab = LeftGroupBox:AddToggle("MyToggle", {
 	end,
 })
 
-LeftGroupBox:AddToggle("MyToggle", {
-	Text = "Fov Visivel",
-	Tooltip = "Altera a visibilidade do fov", -- Information shown when you hover over the toggle
-	DisabledTooltip = "I am disabled!", -- Information shown when you hover over the toggle while it's disabled
-
-	Default = fovVisivel, -- Default value (true / false)
-	Disabled = false, -- Will disable the toggle (true / false)
-	Visible = true, -- Will make the toggle invisible (true / false)
-	Risky = false, -- Makes the text red (the color can be changed using Library.Scheme.Red) (Default value = false)
-
-	Callback = function(Value)
-		fovCircle.Visible = Value
-	end,
-})
 
 LeftGroupBox:AddToggle("MyToggle", {
 	Text = "Aim Time",
@@ -263,6 +275,54 @@ local ativarab = LeftGroupBox:AddToggle("MyToggle", {
         TweenOn = Value
 	end,
 })
+LeftGroupBox:AddToggle("MyToggle", {
+	Text = "Fov Visivel",
+	Tooltip = "Altera a visibilidade do fov", -- Information shown when you hover over the toggle
+	DisabledTooltip = "I am disabled!", -- Information shown when you hover over the toggle while it's disabled
+
+	Default = fovVisivel, -- Default value (true / false)
+	Disabled = false, -- Will disable the toggle (true / false)
+	Visible = true, -- Will make the toggle invisible (true / false)
+	Risky = false, -- Makes the text red (the color can be changed using Library.Scheme.Red) (Default value = false)
+
+	Callback = function(Value)
+		fovCircle.Visible = Value
+	end,
+})
+
+
+
+lb2:AddToggle("MySlider", {
+	Text = "Ativar ESP",
+	Default = ESP.Enabled,
+	Min = 0,
+	Max = 360,
+	Rounding = 1,
+	Compact = false,
+
+	Callback = function(Value)
+	    
+	    --[[
+        ESP.Enabled = true;
+        ESP.ShowBox = false;
+        ESP.ShowName = false;
+        ESP.ShowHealth = false;
+        ESP.ShowTracer = false;
+        ESP.ShowDistance = false;
+        ESP.ShowSkeletons = false;
+
+	    ]]
+		ESP.Enabled = Value
+	end,
+
+	Tooltip = "", -- Information shown when you hover over the slider
+	DisabledTooltip = "I am disabled!", -- Information shown when you hover over the slider while it's disabled
+
+	Disabled = false, -- Will disable the slider (true / false)
+	Visible = true, -- Will make the slider invisible (true / false)
+})
+
+
 
 LeftGroupBox:AddSlider("MySlider", {
 	Text = "Tempo do Tween",
@@ -330,35 +390,6 @@ LeftGroupBox:AddDropdown("Dropdown", {
 
 
 
-lb2:AddToggle("MySlider", {
-	Text = "Ativar ESP",
-	Default = ESP.Enabled,
-	Min = 0,
-	Max = 360,
-	Rounding = 1,
-	Compact = false,
-
-	Callback = function(Value)
-	    
-	    --[[
-        ESP.Enabled = true;
-        ESP.ShowBox = false;
-        ESP.ShowName = false;
-        ESP.ShowHealth = false;
-        ESP.ShowTracer = false;
-        ESP.ShowDistance = false;
-        ESP.ShowSkeletons = false;
-
-	    ]]
-		ESP.Enabled = Value
-	end,
-
-	Tooltip = "", -- Information shown when you hover over the slider
-	DisabledTooltip = "I am disabled!", -- Information shown when you hover over the slider while it's disabled
-
-	Disabled = false, -- Will disable the slider (true / false)
-	Visible = true, -- Will make the slider invisible (true / false)
-})
 
 lb2:AddToggle("MySlider", {
 	Text = "ESP Linhas",
@@ -738,7 +769,7 @@ end)
     end,
 	DoubleClick = false,
 
-	Tooltip = "Faz sua hitbox aparecer normal pro servidor,assim, não te expulsando",
+	Tooltip = "Faz sua velocidade aparecer normal pro servidor,assim, não te expulsando",
 	DisabledTooltip = "I am disabled!",
 
 	Disabled = false, -- Will disable the button (true / false)
@@ -772,10 +803,11 @@ end)
     end,
 	DoubleClick = false,
 
-	Tooltip = "Faz sua hitbox aparecer normal pro servidor,assim, não te expulsando",
+	Tooltip = "Faz seu pulo aparecer normal pro servidor,assim, não te expulsando",
 	DisabledTooltip = "I am disabled!",
 
 	Disabled = false, -- Will disable the button (true / false)
 	Visible = true, -- Will make the button invisible (true / false)
 	Risky = false, -- Makes the text red (the color can be changed using Library.Scheme.Red) (Default value = false)
 })
+

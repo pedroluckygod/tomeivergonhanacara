@@ -1,1 +1,11 @@
-print''
+game.StarterGui:SetCore("SendNotification", {
+Title = "Lucky Xiter",
+Text = "O Lucky Xiter External Mobile está em desenvolvimento.",
+Duration = 2,
+})
+
+game.StarterGui:SetCore("SendNotification", {
+Title = "Lucky Xiter",
+Text = "Bem Vindo, Usuario.",
+Duration = 2,
+})

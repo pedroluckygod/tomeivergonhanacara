@@ -5,7 +5,7 @@ Duration = 2,
 })
 
 game.StarterGui:SetCore("SendNotification", {
-Title = "Lucky Xiter",
+Title = "Lucky Xiter | Conectado!",
 Text = "Bem Vindo, Usuario.",
 Duration = 2,
 })
